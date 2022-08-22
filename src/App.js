@@ -1,23 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import Form from "./components/Form";
+import ItemsList from "./components/ItemsList";
 
 function App() {
+  let initialValue = JSON.parse(localStorage.getItem("userList")) || [];
+
+  const [textArray, setTextArray] = useState(initialValue);
+
+  function handleFormSubmit(event, text) {
+    event.preventDefault();
+    setTextArray([...textArray, text]);
+  }
+
+  useEffect(() => {
+    localStorage.setItem("userList", JSON.stringify(textArray));
+  });
+
+  function clearList() {
+    localStorage.removeItem("userList");
+    setTextArray([]);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Form funct={handleFormSubmit} />
+      <ItemsList list={textArray} function={clearList} />
     </div>
   );
 }
